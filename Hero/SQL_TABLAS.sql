@@ -7,7 +7,7 @@ Create table Cliente
 	Nombres varchar(100),
 	Apellidos varchar(100),
 	Tipo varchar(100),
-	Cedula_Nit varchar(10),
+	Cedula_Nit varchar(10) Unique,
 	Correo varchar(200),
 	Telefono varchar(15),
 	Activo bit, 
@@ -16,7 +16,7 @@ Create table Cliente
 
 Create table Cuenta
 (
-	Numero varchar(15),
+	Numero varchar(15) Unique,
 	Tipo varchar(10),
 	Saldo float,
 	Activo bit,
@@ -39,11 +39,14 @@ Create table Movimientos
 
 Create table Usuario
 (
-	Usuario varchar(15) primary key,
+	Usuario varchar(15) Unique,
 	Contraseña varchar(4),
 	Activo bit,
-
-	ClienteId int foreign key references Cliente(Id)
+	
+	ClienteId int foreign key references Cliente(Id),
+	Id int identity(1, 1) primary key
 )
+
+select * from usuario;
 
 

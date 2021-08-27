@@ -22,11 +22,35 @@ namespace Hero.Api.Controllers
 
         [Route("Loguear")]
         [HttpPost]
-        public async Task<UsuarioModel> Loguear([FromBody] UsuarioModel usuarioModel)
+        public async Task<ActionResult<UsuarioModel>> Loguear([FromBody] UsuarioModel usuarioModel)
         {
-            var logueo = await _usuarioRepository.Loguear(usuarioModel);
-
-            return logueo;
+            try
+            {
+                var logueo = await _usuarioRepository.Loguear(usuarioModel);
+                
+                return Ok(logueo);
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
         }
+
+        [Route("CrearUsuario")]
+        [HttpPost]
+        public async Task<ActionResult> CrearUsuario([FromBody] ClienteModel clienteModel)
+        {
+            try
+            {
+                await _usuarioRepository.CrearUsuario(clienteModel);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
+        }
+
     }
 }
