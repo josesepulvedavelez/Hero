@@ -15,17 +15,17 @@ namespace Hero.Api.Data
         SqlConnection conexion;
         SqlCommand comando;
         SqlDataReader lector;
-        TransactionScope transaccion;
+        SqlTransaction transaccion;
         private readonly string _cadena;
         int result;
         
         string sqlCliente = "Insert Into Cliente(Nombres, Apellidos, Tipo, Cedula_Nit, Correo, Telefono, Activo) " +
                             "Values(@Nombres, @Apellidos, @Tipo, @Cedula_Nit, @Correo, @Telefono, @Activo);" +
-                            "Select SCOPE_IDENTITY() AS Id";
-        
+                            "Select SCOPE_IDENTITY()";
+
         string sqlUsuario = "Insert Into Usuario(Usuario, Contraseña, Activo, ClienteId) " +
                             "Values(@Usuario, @Contraseña, @Activo, @ClienteId)";
-        object IdMax;
+        decimal maxId;
 
         public UsuarioRepository(IConfiguration configuracion)
         {
@@ -34,40 +34,40 @@ namespace Hero.Api.Data
 
         public async Task CrearUsuario(ClienteModel clienteModel)
         {
-            try
+            using (conexion = new SqlConnection(_cadena))
             {
-                using (transaccion = new TransactionScope())
+                conexion.Open();
+
+                transaccion = conexion.BeginTransaction();
+
+                try
                 {
-                    using (conexion = new SqlConnection(_cadena))
-                    {
-                        await conexion.OpenAsync();
+                    comando = new SqlCommand(sqlCliente, conexion);
+                    comando.Parameters.AddWithValue("@Nombres", clienteModel.Nombres);
+                    comando.Parameters.AddWithValue("@Apellidos", clienteModel.Apellidos);
+                    comando.Parameters.AddWithValue("@Tipo", clienteModel.Tipo);
+                    comando.Parameters.AddWithValue("@Cedula_Nit", clienteModel.Cedula_Nit);
+                    comando.Parameters.AddWithValue("@Correo", clienteModel.Correo);
+                    comando.Parameters.AddWithValue("@Telefono", clienteModel.Telefono);
+                    comando.Parameters.AddWithValue("@Activo", clienteModel.ActivoCliente);
+                    
+                    comando.Transaction = transaccion;
+                    maxId = (decimal) await comando.ExecuteScalarAsync();
 
-                        comando = new SqlCommand(sqlCliente, conexion);
-                        comando.Parameters.AddWithValue("@Nombres", clienteModel.Nombres);
-                        comando.Parameters.AddWithValue("@Apellidos", clienteModel.Apellidos);
-                        comando.Parameters.AddWithValue("@Tipo", clienteModel.Tipo);
-                        comando.Parameters.AddWithValue("@Cedula_Nit", clienteModel.Cedula_Nit);
-                        comando.Parameters.AddWithValue("@Correo", clienteModel.Correo);
-                        comando.Parameters.AddWithValue("@Telefono", clienteModel.Telefono);
-                        comando.Parameters.AddWithValue("@Activo", clienteModel.ActivoCliente);
-                        //await comando.ExecuteNonQueryAsync();
+                    comando = new SqlCommand(sqlUsuario, conexion);
+                    comando.Parameters.AddWithValue("@Usuario", clienteModel.Usuario);
+                    comando.Parameters.AddWithValue("@Contraseña", clienteModel.Contraseña);
+                    comando.Parameters.AddWithValue("@Activo", clienteModel.ActivoUsuario);
+                    comando.Parameters.AddWithValue("@ClienteId", maxId);
+                    comando.Transaction = transaccion;
+                    await comando.ExecuteNonQueryAsync();
 
-                        IdMax = await (comando.ExecuteScalarAsync());
-
-                        comando = new SqlCommand(sqlUsuario, conexion);
-                        comando.Parameters.AddWithValue("@Usuario", clienteModel.Usuario);
-                        comando.Parameters.AddWithValue("@Contraseña", clienteModel.Contraseña);
-                        comando.Parameters.AddWithValue("@Activo", clienteModel.ActivoUsuario);
-                        comando.Parameters.AddWithValue("@ClienteId", IdMax);
-                        await comando.ExecuteNonQueryAsync();
-                    }
-
-                    transaccion.Complete();
+                    transaccion.Commit();
                 }
-            }
-            catch (TransactionAbortedException ex)
-            {
-                transaccion.Dispose();
+                catch (Exception ex)
+                {                    
+                    transaccion.Rollback();
+                }
             }            
         }
 
