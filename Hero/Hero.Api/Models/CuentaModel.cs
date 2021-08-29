@@ -5,14 +5,12 @@ using System.Threading.Tasks;
 
 namespace Hero.Api.Models
 {
-    public class ClienteModel
+    public class CuentaModel
     {
-        public string Nombres { get; set; }
-        public string Apellidos { get; set; }
+        public string Numero { get; set; }
         public string Tipo { get; set; }
-        public string Cedula_Nit { get; set; }
-        public string Correo { get; set; }
-        public string Telefono { get; set; }
+        public double Saldo { get; set; }
+        public int ClienteId { get; set; }
         public bool Activo { get; set; }
         public int Id { get; set; }
     }

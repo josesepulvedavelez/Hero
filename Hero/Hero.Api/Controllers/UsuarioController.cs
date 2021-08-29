@@ -1,4 +1,5 @@
 ﻿using Hero.Api.Data;
+using Hero.Api.Dtos;
 using Hero.Api.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +39,7 @@ namespace Hero.Api.Controllers
 
         [Route("CrearUsuario")]
         [HttpPost]
-        public async Task<ActionResult> CrearUsuario([FromBody] ClienteModel clienteModel)
+        public async Task<ActionResult> CrearUsuario([FromBody] RegistroClienteDto clienteModel)
         {
             try
             {

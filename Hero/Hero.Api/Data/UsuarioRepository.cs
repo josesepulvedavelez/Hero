@@ -1,4 +1,6 @@
-﻿using Hero.Api.Models;
+﻿
+using Hero.Api.Dtos;
+using Hero.Api.Models;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -32,7 +34,7 @@ namespace Hero.Api.Data
             _cadena = configuracion.GetConnectionString("cadena");
         }
 
-        public async Task CrearUsuario(ClienteModel clienteModel)
+        public async Task CrearUsuario(RegistroClienteDto registroClienteDto)
         {
             using (conexion = new SqlConnection(_cadena))
             {
@@ -43,21 +45,21 @@ namespace Hero.Api.Data
                 try
                 {
                     comando = new SqlCommand(sqlCliente, conexion);
-                    comando.Parameters.AddWithValue("@Nombres", clienteModel.Nombres);
-                    comando.Parameters.AddWithValue("@Apellidos", clienteModel.Apellidos);
-                    comando.Parameters.AddWithValue("@Tipo", clienteModel.Tipo);
-                    comando.Parameters.AddWithValue("@Cedula_Nit", clienteModel.Cedula_Nit);
-                    comando.Parameters.AddWithValue("@Correo", clienteModel.Correo);
-                    comando.Parameters.AddWithValue("@Telefono", clienteModel.Telefono);
-                    comando.Parameters.AddWithValue("@Activo", clienteModel.ActivoCliente);
+                    comando.Parameters.AddWithValue("@Nombres", registroClienteDto.Nombres);
+                    comando.Parameters.AddWithValue("@Apellidos", registroClienteDto.Apellidos);
+                    comando.Parameters.AddWithValue("@Tipo", registroClienteDto.Tipo);
+                    comando.Parameters.AddWithValue("@Cedula_Nit", registroClienteDto.Cedula_Nit);
+                    comando.Parameters.AddWithValue("@Correo", registroClienteDto.Correo);
+                    comando.Parameters.AddWithValue("@Telefono", registroClienteDto.Telefono);
+                    comando.Parameters.AddWithValue("@Activo", registroClienteDto.ActivoCliente);
                     
                     comando.Transaction = transaccion;
                     maxId = (decimal) await comando.ExecuteScalarAsync();
 
                     comando = new SqlCommand(sqlUsuario, conexion);
-                    comando.Parameters.AddWithValue("@Usuario", clienteModel.Usuario);
-                    comando.Parameters.AddWithValue("@Contraseña", clienteModel.Contraseña);
-                    comando.Parameters.AddWithValue("@Activo", clienteModel.ActivoUsuario);
+                    comando.Parameters.AddWithValue("@Usuario", registroClienteDto.Usuario);
+                    comando.Parameters.AddWithValue("@Contraseña", registroClienteDto.Contraseña);
+                    comando.Parameters.AddWithValue("@Activo", registroClienteDto.ActivoUsuario);
                     comando.Parameters.AddWithValue("@ClienteId", maxId);
                     comando.Transaction = transaccion;
                     await comando.ExecuteNonQueryAsync();

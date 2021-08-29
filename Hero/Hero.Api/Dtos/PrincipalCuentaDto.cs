@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Hero.Api.Models
+namespace Hero.Api.Dtos
 {
-    public class UsuarioModel
+    public class PrincipalCuentaDto
     {
-        public string Usuario { get; set; }
-        public string Contraseña { get; set; }
-        public bool Activo { get; set; }
+        public string Numero { get; set; }
+        public string Tipo { get; set; }
+        public double Saldo { get; set; }
         public int ClienteId { get; set; }
         public int Id { get; set; }
     }
