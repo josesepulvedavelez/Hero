@@ -12,6 +12,10 @@ using System.Transactions;
 
 namespace Hero.Api.Data
 {
+    /// <summary>
+    /// Class <c>UsuarioRepository</c> 
+    /// Contiene toda la funcionalidad que el usuario puede realizar al principio de la aplicacion.
+    /// </summary>
     public class UsuarioRepository
     {
         SqlConnection conexion;
@@ -34,6 +38,11 @@ namespace Hero.Api.Data
             _cadena = configuracion.GetConnectionString("cadena");
         }
 
+        /// <summary>
+        /// Crea un nuevo usuario
+        /// </summary>
+        /// <param name="registroClienteDto">Contiene el objeto con todos los datos del usuario que se va a crear</param>
+        /// <returns></returns>
         public async Task CrearUsuario(RegistroClienteDto registroClienteDto)
         {
             using (conexion = new SqlConnection(_cadena))
@@ -73,6 +82,11 @@ namespace Hero.Api.Data
             }            
         }
 
+        /// <summary>
+        /// Loguearse al principio de la app para ingresar al menu principal
+        /// </summary>
+        /// <param name="usuarioModel">Contiene el objeto que se va a enviar para validar si existe en base de datos</param>
+        /// <returns></returns>
         public async Task<UsuarioModel> Loguear(UsuarioModel usuarioModel)
         {
             UsuarioModel usuario = new UsuarioModel();

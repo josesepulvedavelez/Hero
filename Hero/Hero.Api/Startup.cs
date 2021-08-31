@@ -28,6 +28,7 @@ namespace Hero.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<UsuarioRepository>();
+            services.AddScoped<PrincipalRepository>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

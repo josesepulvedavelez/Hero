@@ -10,6 +10,7 @@ namespace Hero.Api.Dtos
         public string Numero { get; set; }
         public string Tipo { get; set; }
         public double Saldo { get; set; }
+        public bool Activo { get; set; }
         public int ClienteId { get; set; }
         public int Id { get; set; }
     }
