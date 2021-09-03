@@ -19,9 +19,18 @@ namespace Hero.Api.Data
         SqlDataReader lector;
         int result;
 
-        string sqlObtenerCliente = "Select Nombres, Apellidos, Tipo, Id From Cliente Where Id=@IdCliente;";
-        string sqlObtenerCuentas = "Select Numero, Tipo, Saldo, Activo, ClienteId, Id From Cuenta Where ClienteId=@ClienteId";
-        string sqlObtenerMovimientos = "Select Fecha, Tipo, Valor, Activo, CuentaOrigen, CuentaDestino, Id From Where CuentaOrigen=@CuentaOrigen";
+        string sqlObtenerCliente = "Select Nombres, Apellidos, Tipo, Id " +
+                                   "From Cliente " +
+                                   "Where Id=@IdCliente;";
+
+        string sqlObtenerCuentas = "Select Numero, Tipo, Saldo, Activo, ClienteId, Id " +
+                                   "From Cuenta " +
+                                   "Where ClienteId=@ClienteId";
+
+        string sqlObtenerMovimientos = "Select Fecha, Tipo, Valor, Activo, CuentaOrigen, CuentaDestino, Id " +
+                                       "From Movimientos " +
+                                       "Where CuentaOrigen=@CuentaOrigen";
+
         private readonly string _cadena;
 
         public PrincipalRepository(IConfiguration configuracion)
@@ -101,9 +110,38 @@ namespace Hero.Api.Data
         /// </summary>
         /// <param name="idCliente">Id de la cuenta es UNICO</param>
         /// <returns></returns>
-        public async Task<PrincipalMovimientosDto> ObtenerMovimientos(int IdCuenta)
+        public async Task<List<PrincipalMovimientosDto>> ObtenerMovimientos(int IdCuenta)
         {
-            return null;
+            List<PrincipalMovimientosDto> lstPrincipalMovimientos = new List<PrincipalMovimientosDto>();
+
+            using (conexion = new SqlConnection(_cadena))
+            {
+                await conexion.OpenAsync();
+
+                using (comando = new SqlCommand(sqlObtenerMovimientos, conexion))
+                {
+                    comando.Parameters.AddWithValue("@CuentaOrigen", IdCuenta);
+                    lector = await comando.ExecuteReaderAsync();
+
+                    while (await lector.ReadAsync())
+                    {
+                        PrincipalMovimientosDto principalMovimientosDto = new PrincipalMovimientosDto
+                        {
+                            Fecha = Convert.ToDateTime(lector["Fecha"]),
+                            Tipo = Convert.ToString(lector["Tipo"]),
+                            Valor = Convert.ToDouble(lector["Valor"]),
+                            Activo = Convert.ToBoolean(lector["Activo"]),
+                            CuentaOrigen = Convert.ToInt32(lector["CuentaOrigen"]),
+                            CuentaDestino = Convert.ToInt32(lector["CuentaDestino"]),
+                            Id = Convert.ToInt32(lector["Id"])
+                        };
+
+                        lstPrincipalMovimientos.Add(principalMovimientosDto);
+                    }
+                }
+            }
+
+            return lstPrincipalMovimientos;
         }
 
     }

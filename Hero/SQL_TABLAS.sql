@@ -47,6 +47,5 @@ Create table Usuario
 	Id int identity(1, 1) primary key
 )
 
-select * from usuario;
-
+ALTER TABLE MOVIMIENTOS ALTER COLUMN CuentaDestino int NULL;
 

@@ -52,5 +52,21 @@ namespace Hero.Api.Controllers
             }
         }
 
+        [Route("ObtenerMovimientos/{IdCuenta}")]
+        [HttpGet]
+        public async Task<ActionResult<List<PrincipalMovimientosDto>>> ObtenerMovimientos(int idCuenta)
+        {
+            try
+            {
+                var lst = await _clienteRepository.ObtenerMovimientos(idCuenta);
+
+                return Ok(lst);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
     }
 }

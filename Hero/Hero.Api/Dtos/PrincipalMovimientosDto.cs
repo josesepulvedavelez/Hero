@@ -10,5 +10,9 @@ namespace Hero.Api.Dtos
         public DateTime Fecha { get; set; }
         public string Tipo { get; set; }
         public double Valor { get; set; }
+        public bool Activo { get; set; }
+        public int CuentaOrigen { get; set; }
+        public int CuentaDestino { get; set; }
+        public int Id { get; set; }
     }
 }
