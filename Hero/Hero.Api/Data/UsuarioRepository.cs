@@ -24,7 +24,7 @@ namespace Hero.Api.Data
         SqlTransaction transaccion;
         private readonly string _cadena;
         int result;
-        
+
         string sqlCliente = "Insert Into Cliente(Nombres, Apellidos, Tipo, Cedula_Nit, Correo, Telefono, Activo) " +
                             "Values(@Nombres, @Apellidos, @Tipo, @Cedula_Nit, @Correo, @Telefono, @Activo);" +
                             "Select SCOPE_IDENTITY()";
@@ -43,7 +43,7 @@ namespace Hero.Api.Data
         /// </summary>
         /// <param name="registroClienteDto">Contiene el objeto con todos los datos del usuario que se va a crear</param>
         /// <returns></returns>
-        public async Task CrearUsuario(RegistroClienteDto registroClienteDto)
+        public async Task<bool> CrearUsuario(RegistroClienteDto registroClienteDto)
         {
             using (conexion = new SqlConnection(_cadena))
             {
@@ -71,7 +71,7 @@ namespace Hero.Api.Data
                     comando.Parameters.AddWithValue("@Activo", registroClienteDto.ActivoUsuario);
                     comando.Parameters.AddWithValue("@ClienteId", maxId);
                     comando.Transaction = transaccion;
-                    await comando.ExecuteNonQueryAsync();
+                    result = await comando.ExecuteNonQueryAsync();
 
                     transaccion.Commit();
                 }
@@ -79,7 +79,16 @@ namespace Hero.Api.Data
                 {                    
                     transaccion.Rollback();
                 }
-            }            
+            }
+
+            if (result > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>

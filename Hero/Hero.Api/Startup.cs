@@ -29,6 +29,7 @@ namespace Hero.Api
         {
             services.AddScoped<UsuarioRepository>();
             services.AddScoped<PrincipalRepository>();
+            services.AddScoped<MovimientosRepository>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

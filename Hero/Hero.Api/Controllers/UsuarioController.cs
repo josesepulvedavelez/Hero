@@ -39,17 +39,17 @@ namespace Hero.Api.Controllers
 
         [Route("CrearUsuario")]
         [HttpPost]
-        public async Task<ActionResult> CrearUsuario([FromBody] RegistroClienteDto clienteModel)
+        public async Task<ActionResult<bool>> CrearUsuario([FromBody] RegistroClienteDto clienteModel)
         {
             try
             {
-                await _usuarioRepository.CrearUsuario(clienteModel);
+                bool usuario = await _usuarioRepository.CrearUsuario(clienteModel);
 
-                return Ok();
+                return Ok(usuario);
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
         }
 

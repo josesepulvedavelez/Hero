@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Hero.Api.Models
 {
-    public class MovimientosModel
-    {
+	public class MovimientosModel
+	{
 		public DateTime Fecha { get; set; }
-		public string Tipo { get; set; }
+		public string Tipo { get; set; } 
 		public double Valor { get; set; }
 		public bool Activo { get; set; }
 
